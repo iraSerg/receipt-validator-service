@@ -1,0 +1,5 @@
+kafka:
+  brokers:
+    - kafka-1:9090
+    - kafka-2:9090
+    - kafka-3:9090

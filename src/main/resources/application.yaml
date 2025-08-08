@@ -1,0 +1,49 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: receipt-validator-service
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  data:
+    mongodb:
+      uri: mongodb://${MONGO_DATABASE_USERNAME}:${MONGO_DATABASE_PASSWORD}@localhost:27017/${MONGO_DATABASE_NAME}?authSource=admin
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  liquibase:
+    change-log: classpath:db.changelog/db.changelog-master.xml
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092, localhost:9094
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      properties:
+        delivery.timeout.ms: 120000
+        linger.ms: 0
+        request.timeout.ms: 30000
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+      transaction-id-prefix: receipt-validator-service-${random.value}
+    consumer:
+      bootstrap-servers: localhost:9092, localhost:9094
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: receipt-events
+      isolation-level: read_committed
+logging:
+  level:
+    root: info
+    com.example.receiptvalidatorservice: DEBUG
+    org.springframework.kafka.transaction: DEBUG
+    org.apache.kafka.clients.producer.internals.TransactionManager: DEBUG
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+import:
+  json-schema: schema.json
