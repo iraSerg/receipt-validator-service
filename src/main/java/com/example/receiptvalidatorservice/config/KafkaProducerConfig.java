@@ -48,7 +48,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public NewTopic topic() {
+    public NewTopic topicResponse() {
         return TopicBuilder
                 .name(Topic.RECEIPT_VALIDATE_RESPONSE_TOPIC_EVENTS)
                 .partitions(3)
@@ -57,4 +57,13 @@ public class KafkaProducerConfig {
                 .build();
     }
 
+    @Bean
+    public NewTopic topicRequest() {
+        return TopicBuilder
+                .name(Topic.RECEIPT_VALIDATE_REQUEST_TOPIC_EVENTS)
+                .partitions(3)
+                .replicas(3)
+                .configs(Map.of("min.insync.replicas", "2"))
+                .build();
+    }
 }
