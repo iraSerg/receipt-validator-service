@@ -29,7 +29,7 @@ spring:
         request.timeout.ms: 30000
         enable.idempotence: true
         max.in.flight.requests.per.connection: 5
-      transaction-id-prefix: receipt-validator-service-${random.value}
+      transaction-id-prefix: receipt-validator-service-${random.value}-
     consumer:
       bootstrap-servers: localhost:9092, localhost:9094
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
